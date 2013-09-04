@@ -1,5 +1,4 @@
 from AccessControl import SecurityManagement
-from Products.ATContentTypes.interface import IATTopic
 from Products.ATContentTypes.permission import ChangeTopics
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile

@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2.0dev (unreleased)
+-------------------
+
+- Use bootstrap carousel instead of jQueryTools scrollable.
+  [thet]
+
+
 1.6.2 - August 28, 2013
 -----------------------
 

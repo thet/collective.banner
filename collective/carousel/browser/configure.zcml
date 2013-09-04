@@ -4,6 +4,12 @@
     xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="collective.carousel">
 
+  <browser:resourceDirectory
+      name="collective.carousel"
+      directory="resources"
+      layer="collective.carousel.interfaces.ICollectiveCarouselLayer"
+      />
+
   <include package="plone.browserlayer" />
 
   <class class="Products.ATContentTypes.content.topic.ATTopic">

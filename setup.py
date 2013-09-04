@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '1.6.2'
+version = '2.0dev'
 
 setup(
     name='collective.carousel',
@@ -24,7 +24,6 @@ setup(
     install_requires=[
         'setuptools',
         'archetypes.schemaextender',
-        'plone.app.jquerytools',
         'plone.portlet.collection',
     ],
     extras_require={'test': [
