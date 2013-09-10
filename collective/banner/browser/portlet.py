@@ -62,9 +62,9 @@ class ICarouselPortlet(IPortletDataProvider):
     timer = schema.Int(
         title=_(u"Timer"),
         description=_(u"How fast the carousel should be rotated \
-                        (seconds)"),
+                        (milliseconds)"),
         required=False,
-        default=10)
+        default=10000)
 
     image_scale = schema.Choice(
         title=_(u'portlet_image_scale', default=u'Image Scale'),
@@ -73,7 +73,7 @@ class ICarouselPortlet(IPortletDataProvider):
                               u'for the portlet, if there is any image.'),
         required=True,
         default=None,
-        vocabulary="collective.carousel.ImageScaleVocabulary",
+        vocabulary="collective.banner.ImageScaleVocabulary",
         )
 
 
@@ -85,11 +85,11 @@ class Assignment(base.Assignment):
     target_collection = None
     limit = None
     hide_controls = False
-    timer = 10
+    timer = 10000
     image_scale = None
 
     def __init__(self, header=u"", hideheader=False, target_collection=None, limit=None,
-                 hide_controls=False, timer=10, image_scale=None):
+                 hide_controls=False, timer=10000, image_scale=None):
         self.header = header
         self.hideheader = hideheader
         self.target_collection = target_collection
@@ -100,49 +100,24 @@ class Assignment(base.Assignment):
 
     @property
     def title(self):
-        """This property is used to give the title of the portlet in the
-        "manage portlets" screen. Here, we use the title that the user gave.
-        """
-        return self.header or u"Carousel portlet"
+        return self.header or u"Banner portlet"
 
 
 class Renderer(base.Renderer):
-    render = ViewPageTemplateFile('carousel.pt')
+    render = ViewPageTemplateFile('portlet.pt')
 
-    def __init__(self, *args):
-        base.Renderer.__init__(self, *args)
+    def __init__(self, *args, **kwargs):
+        super(Renderer, self).__init__(*args, **kwargs)
+        self.request.set('banner_image_scale', self.data.image_scale)
 
     @property
     def available(self):
         return len(self.results())
 
-    def collection_url(self):
-        collection = self.collection()
-        if collection is None:
-            return None
-        else:
-            return collection.absolute_url()
-
     def css_class(self):
         header = self.data.header
         normalizer = getUtility(IIDNormalizer)
         return "portlet-carousel-%s" % normalizer.normalize(header)
-
-    @memoize
-    def results(self):
-        results = []
-        collection = self.collection()
-        if collection is not None:
-            limit = self.data.limit
-            if limit and limit > 0:
-                # pass on batching hints to the catalog
-                results = collection.queryCatalog(batch=True, b_size=limit)
-                results = results._sequence
-            else:
-                results = collection.queryCatalog()
-            if limit and limit > 0:
-                results = results[:limit]
-        return results
 
     @memoize
     def collection(self):
@@ -164,6 +139,30 @@ class Renderer(base.Renderer):
             collection_path = str(collection_path)
         return portal.restrictedTraverse(collection_path, default=None)
 
+    def collection_url(self):
+        collection = self.collection()
+        if collection is None:
+            return None
+        else:
+            return collection.absolute_url()
+
+    @memoize
+    def results(self):
+        results = []
+        collection = self.collection()
+        if collection is not None:
+            limit = self.data.limit
+            if limit and limit > 0:
+                # pass on batching hints to the catalog
+                results = collection.queryCatalog(batch=True, b_size=limit)
+                results = results._sequence
+            else:
+                results = collection.queryCatalog()
+            if limit and limit > 0:
+                results = results[:limit]
+        return results
+
+
     def use_view_action(self):
         pp = getToolByName(self.context, 'portal_properties', None)
         sp = getattr(pp, 'site_properties', None)
@@ -182,41 +181,25 @@ class Renderer(base.Renderer):
             return None
         return tile()
 
-    def canSeeEditLink(self):
+    def edit_collection(self):
         provider = self.collection()
         smanager = SecurityManagement.getSecurityManager()
-        return smanager.checkPermission(ChangeTopics, provider)
-
-    def editCarouselLink(self):
-        provider = self.collection()
-        if provider is not None:
-            if ICollection.providedBy(provider):
-                return provider.absolute_url() + '/edit'
-            return provider.absolute_url() + '/criterion_edit_form'
+        allowed = smanager.checkPermission(ChangeTopics, provider)
+        if allowed:
+            provider = self.collection()
+            if provider is not None:
+                if ICollection.providedBy(provider):
+                    return provider.absolute_url() + '/edit'
+                return provider.absolute_url() + '/criterion_edit_form'
         return None
-
-    def getTimer(self):
-        """ return timer in ms"""
-        if getattr(self.data, 'timer', None) is not None:
-            return int(self.data.timer*1000)
-        else:
-            return 10000
-
-    def hideHeader(self):
-        """ Whether we show the header or not """
-        if self.data.hideheader:
-            return True
-        else:
-            return False
 
 
 class AddForm(base.AddForm):
     form_fields = form.Fields(ICarouselPortlet)
     form_fields['target_collection'].custom_widget = UberSelectionWidget
-
-    label = _(u"Add Carousel Portlet")
+    label = _(u"Add Banner Portlet")
     description = _(u"This portlet display a listing of items from a \
-                      Collection as a carousel.")
+                      Collection as a banner carousel.")
 
     def create(self, data):
         return Assignment(**data)
@@ -225,7 +208,6 @@ class AddForm(base.AddForm):
 class EditForm(base.EditForm):
     form_fields = form.Fields(ICarouselPortlet)
     form_fields['target_collection'].custom_widget = UberSelectionWidget
-
-    label = _(u"Edit Carousel Portlet")
+    label = _(u"Edit Banner Portlet")
     description = _(u"This portlet display a listing of items from a \
-                      Collection as a carousel.")
+                      Collection as a banner carousel.")

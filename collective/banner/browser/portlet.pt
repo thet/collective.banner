@@ -1,40 +1,47 @@
 <dl class="portlet portletCarouselWrapper"
     tal:define="hide_controls view/data/hide_controls | nothing;
-                timer view/data/timer | python:10000"
+                timer view/data/timer | python:10000;
+                title view/data/title;
+                results view/results;
+                morethanone python:len(results)>1"
     i18n:domain="collective.carousel">
 
   <dt class="portletHeader"
       tal:attributes="class python:view.hideHeader() and 'portletHeader hiddenStructure' or 'portletHeader'">
-    <a href="#" class="tile" tal:content="view/data/title" />
+    <a href="#" class="tile" tal:content="title" />
   </dt>
 
   <dd class="carousel portletItem" tal:condition="view/results">
-    <div class="toolBar" tal:condition="python:view.canSeeEditLink()">
-      <a href="#" title="Edit carousel's results"
-          tal:attributes="href python:view.editCarouselLink()"
-          i18n:attributes="title">Edit Carousel</a>
-    </div>
 
-    <div id="carousel-example-generic" class="carousel slide">
+    <div id="carousel-example-generic" class="carousel slide" tal:attributes="id title">
+      <div class="toolBar" tal:condition="python:view.canSeeEditLink()">
+        <a href="#" title="Edit carousel's results"
+            tal:attributes="href python:view.editCarouselLink()"
+            i18n:attributes="title">Edit Carousel</a>
+      </div>
+
       <!-- Indicators -->
-      <ol class="carousel-indicators">
-        <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-        <li data-target="#carousel-example-generic" data-slide-to="1"></li>
-        <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+      <ol class="carousel-indicators" tal:condition="morethanone">
+        <li data-target="#carousel-example-generic" data-slide-to="0" class="active"
+            tal:repeat="item results"
+            tal:attributes="{'data-target': '#%s' % title,
+                             'data-slide-to': repeat['item'].index,
+                             'class': repeat['item'].first and 'active' or ''}"></li>
       </ol>
 
       <!-- Wrapper for slides -->
       <div class="carousel-inner">
-        <tal:block tal:repeat="item view/results">
+        <tal:block tal:repeat="item results">
         <div class="item active"
-            tal:define="item_object item/getObject;
-                        image_scale view/data/image_scale|nothing; dummy python:view.request.set('carousel_image_scale', image_scale);">
+            tal:define="item_object item/getObject">
           <tal:block replace="structure python:view.get_tile(item_object)" />
         </div>
         </tal:block>
       </div>
 
       <!-- Controls -->
+      <tal:cond condition="morethanone">
+      <tal:cond condition="not:hide_controls">
       <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev"
          title="Previous item" i18n:attributes="title label_previous_item" tal:condition="not:hide_controls">
         <span class="icon-prev" i18n:translate="label_previous_item">Previous item</span>
@@ -43,6 +50,8 @@
         title="Next item" tal:condition="not:hide_controls" i18n:attributes="title label_next_item">
         <span class="icon-next" i18n:translate="label_next_item">Next item</span>
       </a>
+      </tal:cond>
+      </tal:cond>
     </div>
 
   </dd>

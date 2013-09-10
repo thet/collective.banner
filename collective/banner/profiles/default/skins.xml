@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<object name="portal_skins">
- <skin-path name="*" purge="False">
-  <layer name="carousel" remove="True"/>
- </skin-path>
-</object>
