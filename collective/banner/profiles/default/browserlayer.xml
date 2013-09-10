@@ -1,4 +1,4 @@
 <layers>
-    <layer name="collective.carousel"
-           interface="collective.carousel.interfaces.ICollectiveCarouselLayer" />
+    <layer name="collective.banner"
+           interface="collective.banner.interfaces.IThemeLayer" />
 </layers>

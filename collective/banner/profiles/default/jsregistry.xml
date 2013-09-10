@@ -1,15 +1,12 @@
 <?xml version="1.0"?>
 <object name="portal_javascripts" meta_type="JavaScripts Registry">
- <javascript remove="True" id="jquery.tools.min.js"/><!-- upgrade -->
- <javascript remove="True" id="carousel.js"/><!-- upgrade -->
-
  <javascript
     cacheable="True"
     compression="safe"
     cookable="True"
     enabled="True"
     expression=""
-    id="++resource++collective.carousel/transition.js"
+    id="++resource++collective.banner/transition.js"
     inline="False"
     />
   <javascript
@@ -18,8 +15,16 @@
     cookable="True"
     enabled="True"
     expression=""
-    id="++resource++collective.carousel/carousel.js"
+    id="++resource++collective.banner/carousel.js"
     inline="False"
     />
-
+  <javascript
+    cacheable="True"
+    compression="safe"
+    cookable="True"
+    enabled="True"
+    expression=""
+    id="++resource++collective.banner/scripts.js"
+    inline="False"
+    />
 </object>

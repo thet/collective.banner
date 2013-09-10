@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
-version = '2.0dev'
+version = '1.0dev'
 
 setup(
-    name='collective.carousel',
+    name='collective.banner',
     version=version,
     description="Add-on for having Collections' results presented as a nice carousel",
     long_description=open("README.rst").read() + "\n" + open("CHANGES.rst").read(),
@@ -13,9 +13,9 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     keywords='plone zope collection carousel',
-    author='Jarn [Denys Mishunov]',
-    author_email='info@jarn.com',
-    url='https://github.com/collective/collective.carousel',
+    author='Johannes Raggam',
+    author_email='raggam-nl@adm.at',
+    url='https://github.com/thet/collective.banner',
     license='GPL',
     packages=find_packages(exclude=['ez_setup']),
     namespace_packages=['collective'],
@@ -23,7 +23,6 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'archetypes.schemaextender',
         'plone.portlet.collection',
     ],
     extras_require={'test': [

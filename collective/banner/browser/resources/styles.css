@@ -1,0 +1,11 @@
+.icon-prev,
+.icon-next {
+    border-radius:10px;
+    background-color:#222;
+    color:white;
+}
+.icon-prev:hover,
+.icon-next:hover {
+    background-color:white;
+    color:#222;
+}
